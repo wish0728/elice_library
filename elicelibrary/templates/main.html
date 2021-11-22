@@ -1,0 +1,20 @@
+<!-- base.html을 상속받고 -->
+{% extends 'base.html' %}
+<!-- block content를 연결받음 -->
+{% block title %} 메인페이지 {% endblock %}
+
+
+{% block content %}
+여기에 책 목록을 띄워줘야함
+    {% if book_list %}    
+    <div class="container">
+        <ul class="book-list-group">
+            {% for book in book_list %}
+                {{ book.title }}
+            {% endfor %}
+        </ul>                
+    </div>
+    {% else %}
+    <p>책이 한 권도 없는 도서관이라니?!</p>
+    {% endif %}
+{% endblock %}

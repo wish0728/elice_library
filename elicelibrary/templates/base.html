@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/style.css">
+
+    <!-- 각 html 페이지의 타이틀 -->
+    <title>{% block title %}페이지타이틀{% endblock %}</title>
+
+    {% block scripts %}{% endblock %}
+</head>
+
+
+<body>
+    <header>
+        <nav class="navbar">
+            <a class="header-main-name" href="/">엘리서도서관</a>
+            {% block nav_link %}
+            <ul class="navbar-menu">
+                <li><a class="nav-link" href="/login">로그인/회원가입</a></li>
+                <li><a class="nav-link" href="/user_records">대여기록</a></li>
+                <li><a class="nav-link" href="/return">반납하기</a></li>
+            </ul>
+            {% endblock %}
+        </nav>
+    </header>
+    <hr>
+    <!-- 이걸 넣어서 얘가 다른 페이지랑 연결될 수 있게해주는 것임 -->
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>

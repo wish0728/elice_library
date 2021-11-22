@@ -1,0 +1,57 @@
+/* css에서 변수를 할당해서 전체 색상을 바꿔쓸 수 있다? */
+:root {
+  --text-color: black;
+  --background-color: white; 
+  --accent-color: grey;
+}
+  
+body {
+  margin: 0;
+}
+
+/* 앵커태그에 기본적으로 들어간 밑줄과 색상을 바꿔주기*/
+a {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--background-color);
+  padding: 8px 12px;
+}
+  
+.header-main-name {
+  font-family: "Source Sans Pro", sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  padding-left: 24px;
+}
+  
+/* navbar 메뉴 꾸미기 */
+.navbar-menu {
+  display: flex;
+  list-style: none; /* 리스트 닷 없애기 */
+  padding-left: 0;
+}
+  
+/* 메뉴 간격 조정하기 */
+.navbar-menu li {
+  padding: 8px 12px; /* 나중에 메뉴를 클릭할 때 글자 주변을 눌러도 되게 패딩을 약간 줘서 영역을 확보. 마진을 넣으면 클릭할 수 있는 범위가 작아지고 패딩을 넣으면 박스 안에 넣기 때문에 마우스를 클릭할 수 있는 영역이 넓어짐*/
+}
+  
+/* navbar 메뉴 위에 마우스 올리면 변하게 */
+.navbar-menu li:hover {
+  background-color: gray;
+  border-radius: 4px;
+}
+
+.register-input-block p {
+  display: flex;
+}
+
+.login-input-block p {
+  display: flex;
+}
