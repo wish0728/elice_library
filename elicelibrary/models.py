@@ -24,7 +24,7 @@ class Book(db.Model):
     title             = db.Column(db.String(45), nullable=False)
     author            = db.Column(db.String(45))
     publisher         = db.Column(db.String(45))
-    publication_date  = db.Column(db.Date)
+    publication_date  = db.Column(db.String(45))
     pages             = db.Column(db.Integer)
     isbn              = db.Column(db.String(45))
     registered_date   = db.Column(db.DateTime, default=datetime.utcnow)

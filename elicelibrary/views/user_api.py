@@ -46,5 +46,5 @@ def login():
             session.clear()
             session['login_id'] = user_data.email
             session['name']     = user_data.name
-            flash("로그인 성공")
-            return redirect(url_for('book.main_page'))
+            #flash("로그인 성공")
+            return jsonify({'result':'login success'})
