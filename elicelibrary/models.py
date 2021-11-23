@@ -52,7 +52,7 @@ class Review(db.Model):
     review_id         = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     rating            = db.Column(db.Integer)
     content           = db.Column(db.Text())
-    user_id           = db.Column(db.String(45), nullable=False)
+    user_id           = db.Column(db.String(45), db.ForeignKey('User.email'), nullable=False)
     isbn              = db.Column(db.String(45), db.ForeignKey('Book.isbn'))   # 외부키 사용할 때는 '테이블이름.속성', 객체 이름 x
 
 

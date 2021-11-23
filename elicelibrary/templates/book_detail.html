@@ -12,6 +12,10 @@
 {% block content %}
 
 <h1>개별적인 책 정보 이것저것 보여주는 페이지</h1>
+<h2>대출가능/대출중: {{ book.book_status }}
+    <input class='checkout-btn' type="button" value="대출하기">
+</h2>
+
 <p> 책 이미지 :{{ book.book_img }}</p>
 <p> 책_ID  :{{ book.id }}</p>
 <p> 제목 :{{ book.title }}</p>
@@ -22,6 +26,11 @@
 <p> isbn :{{ book.isbn }}</p>
 <p> 책설명 :{{ book.description }}</p>
 <p> 링크 :{{ book.link }}</p>
+
+<h3>리뷰</h3>
+<p> 별점: {{ book_review.rating }} </p>
+<p> 작성자: {{ book_review.user_id }} </p>
+<p> 리뷰내용: {{ book_review.content}} </p>
 
 {% endblock %}
 

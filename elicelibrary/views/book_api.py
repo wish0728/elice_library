@@ -33,7 +33,7 @@ def main_page():
 def book_detail(book_id):
     book_info = Book.query.filter(Book.id == book_id).first()
     book_review = Review.query.filter(Review.isbn == book_info.isbn).all()
-    return render_template("book_detail.html", book = book_info)
+    return render_template("book_detail.html", book = book_info, book_review = book_review)
 
 # 대여기록
 @book.route('/user_records', methods=["GET", "POST"])
