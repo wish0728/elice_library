@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request, redirect, Blueprint
 from flask.helpers import url_for
+from sqlalchemy.orm import query
 from elicelibrary.models import *
 import csv
 
@@ -35,8 +36,34 @@ def book_detail(book_id):
     book_review = Review.query.filter(Review.isbn == book_info.isbn).all()
     return render_template("book_detail.html", book = book_info, book_review = book_review)
 
+
+# 리뷰 작성
+@book.route('/review/<int:book_id>', methods=["POST"])
+def write_review(book_id):   
+    # login한 session이 있으면 작성, 없으면 로그인 페이지로 이동
+    '''
+    if not session['login_id']:
+        return redirect(url_for(user.login))
+    '''
+
+
+    # user_id = session['user_id']    -> 이 로그인 세션을 어디서 어떻게 가져와야 하지?? 
+    write_rating = request.form['star']
+    write_content = request.form['review']
+    # writer_id = 
+    # isbn = 
+    review = Review(rating=write_rating, content=write_content, user_id=writer_id , isbn=isbn)
+    db.session.add(review)
+    db.session.commit()
+
+
+
+
+
+
+
 # 대여기록
-@book.route('/user_records', methods=["GET", "POST"])
+@book.route('/checkout_records', methods=["GET", "POST"])
 def user_records():
     return jsonify({"result":"user_records"})
 
@@ -44,4 +71,5 @@ def user_records():
 @book.route('/return', methods=["GET", "POST"])
 def book_return():
     return jsonify({"result":"book_return"})
+
 

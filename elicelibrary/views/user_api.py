@@ -44,8 +44,8 @@ def login():
             return jsonify({'result':'worngpassword'})
         else :
             session.clear()
-            session['login_id'] = email
-            flash("로그인 성공")  # 얘 지금 안보인다 css 만져주거나 해야함
+            session['login_id'] = user_data.email
+            # flash("로그인 성공")  # 얘 지금 안보인다 css 만져주거나 해야함
             return redirect(url_for('book.main_page'))
 
 
