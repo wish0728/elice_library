@@ -55,6 +55,11 @@ class Review(db.Model):
     user_id           = db.Column(db.String(45), db.ForeignKey('User.email'), nullable=False)
     isbn              = db.Column(db.String(45), db.ForeignKey('Book.isbn'))   # 외부키 사용할 때는 '테이블이름.속성', 객체 이름 x
 
+    def __init__(self, rating, content, user_id, isbn) :
+        self.rating = rating
+        self.content = content
+        self.user_id = user_id
+        self.isbn   = isbn
 
 
 class checkoutRecords(db.Model):

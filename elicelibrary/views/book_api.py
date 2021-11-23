@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect, Blueprint
+from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash
 from flask.helpers import url_for
 from sqlalchemy.orm import query
 from elicelibrary.models import *
@@ -33,7 +33,8 @@ def main_page():
 @book.route('/book/<int:book_id>', methods=["GET"])
 def book_detail(book_id):
     book_info = Book.query.filter(Book.id == book_id).first()
-    book_review = Review.query.filter(Review.isbn == book_info.isbn).all()
+    isbn = book_info.isbn
+    book_review = Review.query.filter(Review.isbn == isbn).all()
     return render_template("book_detail.html", book = book_info, book_review = book_review)
 
 
@@ -50,11 +51,14 @@ def write_review(book_id):
     # user_id = session['user_id']    -> 이 로그인 세션을 어디서 어떻게 가져와야 하지?? 
     write_rating = request.form['star']
     write_content = request.form['review']
-    # writer_id = 
-    # isbn = 
+    writer_id = "123"
+    isbn = "9791196440916"
     review = Review(rating=write_rating, content=write_content, user_id=writer_id , isbn=isbn)
     db.session.add(review)
     db.session.commit()
+
+    flash('리뷰 썼어!')
+    return redirect(url_for('book.book_detail', book_id=book_id))
 
 
 
