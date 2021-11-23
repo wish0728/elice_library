@@ -17,13 +17,10 @@
     <header>
         <nav class="navbar">
             <a class="header-main-name" href="/">엘리서도서관</a>
-            {% block nav_link %}
             <ul class="navbar-menu">
-                <li><a class="nav-link" href="/login">로그인/회원가입</a></li>
-                <li><a class="nav-link" href="/user_records">대여기록</a></li>
-                <li><a class="nav-link" href="/return">반납하기</a></li>
-            </ul>
+            {% block nav_link %}
             {% endblock %}
+            </ul>
         </nav>
     </header>
     <hr>

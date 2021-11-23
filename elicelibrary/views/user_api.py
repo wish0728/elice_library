@@ -3,7 +3,7 @@ from elicelibrary.models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-user = Blueprint("user", __name__)
+user = Blueprint("user", __name__, url_prefix='/')
 
 
 #회원가입
@@ -44,7 +44,13 @@ def login():
             return jsonify({'result':'worngpassword'})
         else :
             session.clear()
-            session['login_id'] = user_data.email
-            session['name']     = user_data.name
-            #flash("로그인 성공")
-            return jsonify({'result':'login success'})
+            session['login_id'] = email
+            flash("로그인 성공")
+            return redirect(url_for('book.main_page'))
+
+
+#로그아웃
+@user.route("/logout")
+def logout():
+    session["login_id"] = None
+    return redirect(url_for('book.main_page'))

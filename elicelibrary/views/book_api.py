@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, request, redirect, Blueprint
 from elicelibrary.models import *
 import csv
 
-book = Blueprint('book', __name__)
+book = Blueprint('book', __name__, url_prefix='/')
 
 # 메인 페이지
 @book.route('/')
