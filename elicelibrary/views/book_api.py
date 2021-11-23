@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request, redirect, Blueprint
+from flask.helpers import url_for
 from elicelibrary.models import *
 import csv
 
@@ -25,7 +26,13 @@ def main_page():
     else :
         return render_template("main.html", book_list=book_list)
 
+
 # 책 개별 소개 페이지 
 @book.route('/book/<int:book_id>', methods=["GET"])
 def book_detail():
     return render_template("book_detail.html")
+
+# 대여기록
+@book.route('/user_records', methods=["GET", "POST"])
+def user_records():
+    return redirect(url_for('book.main_page'))

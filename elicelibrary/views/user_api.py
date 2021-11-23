@@ -12,8 +12,8 @@ def join():
     if request.method == 'GET' :
         return render_template("join.html")
     elif request.method == 'POST' :
-        # 회원가입 로직 구현해야함
-        # 일단 중복되는 id 없는지 확인
+        # 회원가입 로직
+        # 중복 id 없는지 확인
         user_email = User.query.filter_by(email=request.form['useremail']).first()
         if not user_email :
             password = generate_password_hash(request.form['password']) #암호화된 비밀번호
@@ -45,7 +45,7 @@ def login():
         else :
             session.clear()
             session['login_id'] = email
-            flash("로그인 성공")
+            flash("로그인 성공")  # 얘 지금 안보인다 css 만져주거나 해야함
             return redirect(url_for('book.main_page'))
 
 
