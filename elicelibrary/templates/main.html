@@ -18,8 +18,8 @@
 {% block content %}
 <!-- 책 목록 -->
     {% for b in book_list %}
-        <p>{{ b.title }} </p>
-        
+        <li><a href="/book/{{ b.id }}">{{ b.title }}</a></li>    
+
     {% endfor %}
 
 

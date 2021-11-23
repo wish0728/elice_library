@@ -1,3 +1,4 @@
+from enum import unique
 from elicelibrary import db
 from datetime import datetime
 
@@ -5,9 +6,9 @@ class User(db.Model):
 
     __tablename__     = 'User'
 
-    email             = db.Column(db.String(45), primary_key=True, nullable=False)
+    email             = db.Column(db.String(45), primary_key=True, nullable=False, unique=True)
     password          = db.Column(db.String(255), nullable=False)
-    name              = db.Column(db.String(45))
+    name              = db.Column(db.String(45), nullable=True)
     phone             = db.Column(db.String(45), nullable=True)
 
     def __init__(self, email, password, name, phone):
@@ -20,7 +21,7 @@ class Book(db.Model):
 
     __tablename__     = 'Book'
 
-    id                = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    id                = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
     title             = db.Column(db.String(45), nullable=False)
     author            = db.Column(db.String(45))
     publisher         = db.Column(db.String(45))

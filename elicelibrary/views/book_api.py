@@ -24,15 +24,24 @@ def main_page():
             db.session.add(book_info)
             db.session.commit()
     else :
+
         return render_template("main.html", book_list=book_list)
 
 
 # 책 개별 소개 페이지 
 @book.route('/book/<int:book_id>', methods=["GET"])
-def book_detail():
-    return render_template("book_detail.html")
+def book_detail(book_id):
+    book_info = Book.query.filter(Book.id == book_id).first()
+    book_review = Review.query.filter(Review.isbn == book_info.isbn).all()
+    return render_template("book_detail.html", book = book_info)
 
 # 대여기록
 @book.route('/user_records', methods=["GET", "POST"])
 def user_records():
-    return redirect(url_for('book.main_page'))
+    return jsonify({"result":"user_records"})
+
+# 반납하기
+@book.route('/return', methods=["GET", "POST"])
+def book_return():
+    return jsonify({"result":"book_return"})
+
