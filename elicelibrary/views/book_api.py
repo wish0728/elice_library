@@ -42,16 +42,17 @@ def main_page():
 # 책 개별 소개 페이지 
 @book.route('/book_info/<int:book_id>', methods=["GET"])
 def book_detail(book_id):
-
+    # 첵정보 불러오기
     book_info = Book.query.filter(Book.id == book_id).first()
-    # 하지만 리뷰는 여러개를 불러와야함. 현재 불러온 책이랑 isbn이 같은 리뷰는 다 불러와야함 
+    # isbn이 같은 리뷰 전부 불러오기
     book_review = Review.query.filter(Review.isbn == book_info.isbn).all()
-    return render_template("book_detail.html", book = book_info, review = book_review)
-
-
-# review db
-
-
+    # 리뷰갯수, 리뷰 평균별점
+    rating_sum, rating_avg = 0, 0
+    if book_review :
+        for review in book_review:
+            rating_sum += review.rating
+        rating_avg = rating_sum / len(book_review)
+    return render_template("book_detail.html", book = book_info, review = book_review, rating_avg = rating_avg)
 
 
 
@@ -76,9 +77,6 @@ def write_review(book_id):
 
     flash('리뷰 썼어!')
     return redirect(url_for('book.book_detail', book_id=book_id))
-
-
-
 
 
 
