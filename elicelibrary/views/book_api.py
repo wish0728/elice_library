@@ -24,7 +24,7 @@ def main_page():
         f.close()
 
         for i in booklist[1:]:
-            book_info = Book(title=i[1], publisher=i[2], author=i[3], publication_date=i[4], pages=i[5], isbn=i[6], description=i[7], book_link=i[8], book_status="1")
+            book_info = Book(title=i[1], publisher=i[2], author=i[3], publication_date=i[4], pages=i[5], isbn=i[6][:-1], description=i[7], book_link=i[8], book_status="1")
             db.session.add(book_info)
             db.session.commit()
     
@@ -42,14 +42,14 @@ def main_page():
 # 책 개별 소개 페이지 
 @book.route('/book_info/<int:book_id>', methods=["GET"])
 def book_detail(book_id):
-    # 현재 페이지가 가르키는 책의 세부정보를 db에서 불러오는것
+
     book_info = Book.query.filter(Book.id == book_id).first()
     # 하지만 리뷰는 여러개를 불러와야함. 현재 불러온 책이랑 isbn이 같은 리뷰는 다 불러와야함 
-    book_review = Review.query.filter(Review.isbn == book_info.isbn).all()    
-
+    book_review = Review.query.filter(Review.isbn == book_info.isbn).all()
     return render_template("book_detail.html", book = book_info, review = book_review)
 
 
+# review db
 
 
 

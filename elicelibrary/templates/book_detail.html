@@ -26,13 +26,13 @@
 <p> 책설명 :{{ book.description }}</p>
 <p> 링크 :{{ book.book_link }}</p>
 
-{{ review }}
+<div>
 {% for r in review %}
 <p>리뷰나왓</p>
     <p>{{ r.rating }}</p>
     <p>{{ r.content }}</p>
 {% endfor %}
-
+</div>
 
 {% if session['login_id'] %}
 <h3>리뷰 작성</h3>

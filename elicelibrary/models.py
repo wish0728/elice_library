@@ -48,6 +48,7 @@ class Book(db.Model):
 
 
 class Review(db.Model):
+
     __tablename__     = 'Review'
 
     review_id         = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -57,11 +58,11 @@ class Review(db.Model):
     isbn              = db.Column(db.String(45), db.ForeignKey('Book.isbn'))   # 외부키 사용할 때는 '테이블이름.속성', 객체 이름 x
 
     def __init__(self, rating, content, user_id, isbn) :
-        self.rating = rating
-        self.content = content
-        self.user_id = user_id
-        self.isbn   = isbn
 
+        self.rating     = rating
+        self.content    = content
+        self.user_id    = user_id
+        self.isbn       = isbn
 
 class checkoutRecords(db.Model):
     __tablename__     = 'checkoutRecords'
