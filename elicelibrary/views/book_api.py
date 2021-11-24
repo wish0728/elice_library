@@ -10,7 +10,8 @@ book = Blueprint('book', __name__, url_prefix='/')
 @book.route('/')
 def main_page():
     book_list = Book.query.order_by(Book.registered_date.desc()).all()
-    # db에 내용 없으면 csv를 넣는 코드
+    # db에 내용 없으면 csv를 넣는 코드 - 최초에 db가 없을때만 실행됨.
+    # registered_date 기준으로 한 이유는 추후 새로 책이 입고될 때 새로 입고된 책들이 상단에 뜨도록 하기 위함.
     if not book_list : 
     
         f = open('booklist.csv', 'r', encoding='utf-8')
@@ -25,6 +26,9 @@ def main_page():
             db.session.add(book_info)
             db.session.commit()
     else :
+        # 책을 무슨 기준으로 보여줄거니? -> 물리적 실체가 아니라 개념적 실체를 가르는 isbn으로 보여줄거임
+        # 즉 isbn이 같으면 같은 책이기 때문에 하나로 보여줄거임
+        # 따라서 쿼리문으로 book_list에 넣어줄 내용이 distinct를 써서 isbn당 하나만 나오게 만들어야하는데 어떻게 하는지 모르겠네 -> 질문
 
         return render_template("main.html", book_list=book_list)
 
@@ -34,7 +38,8 @@ def main_page():
 def book_detail(book_id):
     book_info = Book.query.filter(Book.id == book_id).first()
     isbn = book_info.isbn
-    book_review = Review.query.filter(Review.isbn == isbn).all()
+    book_review = Review.query.filter(Review.isbn == isbn).all()    
+
     return render_template("book_detail.html", book = book_info, book_review = book_review)
 
 
