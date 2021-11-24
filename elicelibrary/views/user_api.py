@@ -20,12 +20,12 @@ def join():
             new_user = User(email=request.form['useremail'], password=password, name=request.form['username'], phone=request.form['phone'])
             db.session.add(new_user)
             db.session.commit()
-            # flash("회원가입이 완료되었습니다")
+            flash("회원가입이 완료되었습니다")
 
-            return jsonify({"result":"success"})
+            return redirect(url_for('user.login'))
         else :
-            # flash("이미 가입된 이메일입니다.")
-            return jsonify({"result":"fail - email exists"})
+            flash("이미 가입된 이메일입니다.")
+            return redirect(url_for('user.join'))
 
 #로그인
 @user.route("/login", methods=['GET', 'POST'])
@@ -39,13 +39,15 @@ def login():
         user_data    = User.query.filter_by(email=email).first()
 
         if not user_data :
-            return jsonify({'result':'not registered email'})
+            flash("가입되지 않은 이메일입니다.")
+            return redirect(url_for('user.login'))
         elif not check_password_hash(user_data.password, password):
-            return jsonify({'result':'worngpassword'})
+            flash("잘못된 비밀번호 입니다.")            
+            return redirect(url_for('user.login'))   #+)비밀번호만 틀렸을 때 전에 입력한 아이디는 남겨주기
         else :
             session.clear()
             session['login_id'] = user_data.email
-            # flash("로그인 성공")  # 얘 지금 안보인다 css 만져주거나 해야함
+            flash("로그인 성공")  
             return redirect(url_for('book.main_page'))
 
 
@@ -53,4 +55,5 @@ def login():
 @user.route("/logout")
 def logout():
     session["login_id"] = None
+    flash("로그아웃 성공")
     return redirect(url_for('book.main_page'))
