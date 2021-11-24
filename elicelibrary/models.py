@@ -31,10 +31,10 @@ class Book(db.Model):
     registered_date   = db.Column(db.DateTime, default=datetime.utcnow)
     description       = db.Column(db.Text())    # 길이를 정할 수 없는 문자열은 Text를 쓰면 됨
     book_link         = db.Column(db.String(255))
-    book_status       = db.Column(db.Integer)
+    book_status       = db.Column(db.String(45))   # "1" :대출가능, "0" : 대출중 , "999" : 폐기    -> 선택형 변수에 적합한 데이터타입이 있을까? 
     book_img          = db.Column(db.String(45))    # 책 표지만 바뀐 경우, 또는 책이 다르지만 같은 표지를 쓰는 경우가 있기 때문에 이미지 스토리지에서 같은 이미지의 반복을 막기 위해 별도의 책 이미지 식별 용 변수를 넣음
 
-    def __init__(self, title, author, publisher, publication_date, pages, isbn, description, book_link) :
+    def __init__(self, title, author, publisher, publication_date, pages, isbn, description, book_link, book_status) :
         self.title = title
         self.author = author
         self.publisher = publisher
@@ -43,6 +43,7 @@ class Book(db.Model):
         self.isbn = isbn
         self.description = description
         self.book_link = book_link
+        self.book_status = book_status
         
 
 

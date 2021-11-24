@@ -17,7 +17,6 @@
 </h2>
 
 <p> 책 이미지 :{{ book.book_img }}</p>
-<p> 책_ID  :{{ book.id }}</p>
 <p> 제목 :{{ book.title }}</p>
 <p> 저자 :{{ book.author }}</p>
 <p> 출판사 :{{ book.publisher }}</p>
@@ -27,9 +26,11 @@
 <p> 책설명 :{{ book.description }}</p>
 <p> 링크 :{{ book.book_link }}</p>
 
-{% for r in book_review %}
-    {{ book_review.rating }}
-    {{ book_review.content }}
+{{ review }}
+{% for r in review %}
+<p>리뷰나왓</p>
+    <p>{{ r.rating }}</p>
+    <p>{{ r.content }}</p>
 {% endfor %}
 
 

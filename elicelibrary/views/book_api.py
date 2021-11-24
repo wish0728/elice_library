@@ -1,5 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash
-from flask.helpers import url_for
+from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash, url_for
 from sqlalchemy.orm import query
 from elicelibrary.models import *
 import csv
@@ -12,6 +11,8 @@ def main_page():
     book_list = Book.query.order_by(Book.registered_date.desc()).all()
     # db에 내용 없으면 csv를 넣는 코드 - 최초에 db가 없을때만 실행됨.
     # registered_date 기준으로 한 이유는 추후 새로 책이 입고될 때 새로 입고된 책들이 상단에 뜨도록 하기 위함.
+
+    #!) 애초에 여기서 book_list 에 book_status에 따라서 abandon도서는 한 번 걸러줘야함
     
     if not book_list : 
     
@@ -23,7 +24,7 @@ def main_page():
         f.close()
 
         for i in booklist[1:]:
-            book_info = Book(title=i[1], publisher=i[2], author=i[3], publication_date=i[4], pages=i[5], isbn=i[6], description=i[7], book_link=i[8])
+            book_info = Book(title=i[1], publisher=i[2], author=i[3], publication_date=i[4], pages=i[5], isbn=i[6], description=i[7], book_link=i[8], book_status="1")
             db.session.add(book_info)
             db.session.commit()
     
@@ -34,14 +35,24 @@ def main_page():
     return render_template("main.html", book_list=book_list)
 
 
-# 책 개별 소개 페이지 
-@book.route('/book/<int:book_id>', methods=["GET"])
-def book_detail(book_id):
-    book_info = Book.query.filter(Book.id == book_id).first()
-    isbn = book_info.isbn
-    book_review = Review.query.filter(Review.isbn == isbn).all()    
 
-    return render_template("book_detail.html", book = book_info, book_review = book_review)
+
+
+
+# 책 개별 소개 페이지 
+@book.route('/book_info/<int:book_id>', methods=["GET"])
+def book_detail(book_id):
+    # 현재 페이지가 가르키는 책의 세부정보를 db에서 불러오는것
+    book_info = Book.query.filter(Book.id == book_id).first()
+    # 하지만 리뷰는 여러개를 불러와야함. 현재 불러온 책이랑 isbn이 같은 리뷰는 다 불러와야함 
+    book_review = Review.query.filter(Review.isbn == book_info.isbn).all()    
+
+    return render_template("book_detail.html", book = book_info, review = book_review)
+
+
+
+
+
 
 
 # 리뷰 작성
