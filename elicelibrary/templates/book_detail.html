@@ -10,14 +10,16 @@
 <!------------- 각 책의 세부정보 보여주기 -------------->
 
 {% block content %}
+<div class="book-detail-info-container">
+<h3>~~개별적인 책 정보 이것저것 보여주는 페이지~~</h3>
+<h2> 책제목 :{{ book.title }}</h2>
 
-<h1>개별적인 책 정보 이것저것 보여주는 페이지</h1>
-<h2>대출가능/대출중: {{ book.book_status }}
+<h2>
+    <p>    대출가능/대출중: {{ book.book_status }}   </p>
     <input class='checkout-btn' type="button" value="대출하기">
 </h2>
 
 <p> 책 이미지 :{{ book.book_img }}</p>
-<p> 제목 :{{ book.title }}</p>
 <p> 저자 :{{ book.author }}</p>
 <p> 출판사 :{{ book.publisher }}</p>
 <p> 출간일 :{{ book.publication_date }}</p>
@@ -25,13 +27,17 @@
 <p> isbn :{{ book.isbn }}</p>
 <p> 책설명 :{{ book.description }}</p>
 <p> 링크 :{{ book.book_link }}</p>
+</div>
 
-<div>
-{% for r in review %}
-<p>리뷰나왓</p>
-    <p>{{ r.rating }}</p>
-    <p>{{ r.content }}</p>
-{% endfor %}
+
+<div class="review-container">
+    <h2>~~ 리뷰 ~~</h2>
+    {% for r in review %}
+    <div class="review">
+        <p>평점: {{ r.rating }}</p>
+        <p>평가: {{ r.content }}</p>
+    </div>
+    {% endfor %}
 </div>
 
 {% if session['login_id'] %}
