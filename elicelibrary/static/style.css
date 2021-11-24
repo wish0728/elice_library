@@ -59,14 +59,20 @@ a {
 
 /* 메인화면의 책 정보 나열 페이지 flex로 정렬시키기 */
 .book-card-container {
-  margin: 10px auto 10px auto;
+  margin: 10px 20px 10px 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
 }
 
 .book-info-card {
+  margin: 10px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
   width: 300px;
   height: 400px;
-  
+}
+/* 메인의 책 위에 마우스 올리면 변하게 */
+.book-info-card:hover {
+  background-color: rgb(199, 199, 199);
+  border-radius: 4px;
 }
