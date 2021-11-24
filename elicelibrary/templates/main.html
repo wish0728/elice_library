@@ -6,11 +6,18 @@
 
 {% block content %}
 <!-- 책 목록 -->
+
+<div class="book-card-container">
     {% for b in book_list %}
-        <li><a href="/book/{{ b.id }}">{{ b.title }}</a></li>    
-
+        <div class="book-info-card">
+            <a href="/book/{{ b.id }}">{{ b.title }}</a>
+            <br>[별점]
+            <br>{{ b.book_status }}
+            <br>
+            <a href=""> [대출하기] </a>
+        </div>
     {% endfor %}
-
+</div>
 
 
 

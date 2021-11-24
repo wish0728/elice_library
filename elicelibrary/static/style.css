@@ -55,3 +55,18 @@ a {
 .login-input-block p {
   display: flex;
 }
+
+
+/* 메인화면의 책 정보 나열 페이지 flex로 정렬시키기 */
+.book-card-container {
+  margin: 10px auto 10px auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.book-info-card {
+  width: 300px;
+  height: 400px;
+  
+}
