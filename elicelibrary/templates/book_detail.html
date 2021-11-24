@@ -32,10 +32,12 @@
 
 <div class="review-container">
     <h2>~~ 리뷰 ~~</h2>
-    리뷰가 총 {{}} 개 있습니다. 평균별점
+    <p>리뷰가 총 {{ review_cnt }} 개 있습니다. 평균별점은 {{ rating_avg }} 입니다. </p>
+    {% for review in review_list %}
     <div class="review">
-        <p>평점: {{ r.rating }}</p>
-        <p>평가: {{ r.content }}</p>
+        <p>작성자: {{ review.user_id }}</p>
+        <p>평점: {{ review.rating }}</p>
+        <p>평가: {{ review.content }}</p>
     </div>
     {% endfor %}
 </div>
@@ -56,6 +58,11 @@
     </div>
     <input class="btn btn-primary" type="submit" value="리뷰 올리기">
 </form>
+
+{% else %}
+<p>로그인 후 리뷰를 남겨주세요</p>
+
+
 {% endif %}
 
 

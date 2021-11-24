@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash, url_for
+from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash, url_for, session
 from sqlalchemy.orm import query
 from elicelibrary.models import *
 import csv
@@ -52,7 +52,7 @@ def book_detail(book_id):
         for review in book_review:
             rating_sum += review.rating
         rating_avg = rating_sum / len(book_review)
-    return render_template("book_detail.html", book = book_info, review = book_review, rating_avg = rating_avg)
+    return render_template("book_detail.html", book = book_info, review_list = book_review, rating_avg = rating_avg, review_cnt = len(book_review))
 
 
 
@@ -60,18 +60,20 @@ def book_detail(book_id):
 @book.route('/review/<int:book_id>', methods=["POST"])
 def write_review(book_id):   
     # login한 session이 있으면 작성, 없으면 로그인 페이지로 이동
-    '''
-    if not session['login_id']:
-        return redirect(url_for(user.login))
-    '''
 
+    if 'login_id' not in session:
+        flash('리뷰를 작성하시려면 로그인 해주세요.')
+        return redirect(url_for('user.login'))
 
     # user_id = session['user_id']    -> 이 로그인 세션을 어디서 어떻게 가져와야 하지?? 
     write_rating = request.form['star']
     write_content = request.form['review']
-    writer_id = "123"
-    isbn = "9791196440916"
-    review = Review(rating=write_rating, content=write_content, user_id=writer_id , isbn=isbn)
+    writer_id = session['login_id']
+    
+    # isbn을 db에서 쿼리문으로 현재 페이지의 책 id랑 같은 애로 필터해서 걔의 isbn을 불러오기
+    book = Book.query.filter(Book.id == book_id).first()
+
+    review = Review(rating=write_rating, content=write_content, user_id=writer_id , isbn=book.isbn)
     db.session.add(review)
     db.session.commit()
 
