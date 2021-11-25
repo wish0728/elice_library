@@ -1,7 +1,6 @@
-from flask import Flask, Blueprint
+from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-
 import config
 
 db = SQLAlchemy()  # 전역 변수로 db와 migrate를 만들어서 -> 뒤에 #ORM 에서 app객체와 이어줌 
@@ -27,3 +26,5 @@ def create_app():
     return app
 
 
+if __name__ == "__main__":
+    create_app().run(debug=True, port=5000)

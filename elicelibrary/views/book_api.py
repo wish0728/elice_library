@@ -37,8 +37,6 @@ def main_page():
 
 
 
-
-
 # 책 개별 소개 페이지 
 @book.route('/book_info/<int:book_id>', methods=["GET"])
 def book_detail(book_id):
@@ -53,7 +51,6 @@ def book_detail(book_id):
             rating_sum += review.rating
         rating_avg = rating_sum / len(book_review)
     return render_template("book_detail.html", book = book_info, review_list = book_review, rating_avg = rating_avg, review_cnt = len(book_review))
-
 
 
 # 리뷰 작성
@@ -79,6 +76,45 @@ def write_review(book_id):
 
     flash('리뷰 썼어!')
     return redirect(url_for('book.book_detail', book_id=book_id))
+
+
+
+
+
+
+
+# 대출하기 기능 구현
+    # 메인화면에서 대출하기 버튼 눌렀을 때 (로그인 상태로 분기)
+        # 로그아웃 상태면 :
+            # -> 로그인 화면으로 돌아가기
+        # 로그인 상태면 : 대출 실행
+            # -> 대출실행되면 book_status 변경
+            # -> db에 대출기록 보내기
+@book.route('/book_checkout/<int:book_id>', methods=["GET","POST"])
+def checkout(book_id):
+    if 'login_id' in session:
+        # 현재 대출신청한 책 Book db에서 book_status를 바꾸기(대출중 0으로)
+        # 수정할 레코드 불러와서, 해당 값만 수정해주고, commit()
+        
+        checkoutbook = Book.query.filter(Book.id == book_id).first()
+        checkoutbook.book_status = "0"
+        db.session.commit()
+        flash("대출처리되었습니다.")
+
+        return redirect(url_for('book.main_page'))
+
+        # checkoutRecords db에 대출기록 추가
+            # 가져올 정보: book_id, user_id, 대출날짜checkoutdate(오늘로 자동생성), 반납일duedate(2주후로 자동생성)
+
+
+
+    else :
+        flash("대출하시려면 로그인이 필요합니다.")
+        return redirect(url_for('user.login'))
+
+
+
+
 
 
 
