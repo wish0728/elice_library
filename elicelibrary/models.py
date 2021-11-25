@@ -65,21 +65,19 @@ class Review(db.Model):
         self.isbn       = isbn
 
 class checkoutRecords(db.Model):
+    
     __tablename__     = 'checkoutRecords'
 
     checkout_id       = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
     book_id           = db.Column(db.Integer, db.ForeignKey('Book.id'), nullable=False)
-    user_id           = db.Column(db.String(45), db.ForeignKey('User.email'), nullable=False)
-    checkoutdate      = db.Column(db.Date, nullable=False)
-    duedate           = db.Column(db.Date, nullable=False)
-    returndate        = db.Column(db.Date)
+    user_id           = db.Column(db.String(45), db.ForeignKey('User.email'))
+    checkoutdate      = db.Column(db.Date)
+    duedate           = db.Column(db.Date, nullable=True, default=None)
+    returndate        = db.Column(db.Date, nullable=True, default=None)
     isbn              = db.Column(db.String(45))
 
-    def __init__(self, book_id, user_id, checkoutdate, duedate, returndate, isbn):
+    def __init__(self, book_id, user_id, checkoutdate):
 
         self.book_id = book_id
         self.user_id = user_id
         self.checkoutdate = checkoutdate
-        self.duedate = duedate
-        self.returndate = returndate
-        self.isbn = isbn
