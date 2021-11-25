@@ -108,9 +108,9 @@ def checkout(book_id):
 
         # checkoutRecords db에 대출기록 추가
             # 가져올 정보: book_id, user_id, 대출날짜checkoutdate(오늘로 자동생성), 반납일duedate(2주후로 자동생성)
-        
+        print(checkoutbook.isbn)
         user_id = session['login_id']
-        checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today())
+        checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today(), duedate=date.today(), isbn=checkoutbook.isbn)
         db.session.add(checkout)
         db.session.commit()
 

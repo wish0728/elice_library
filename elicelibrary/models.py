@@ -1,6 +1,6 @@
 from enum import unique
 from elicelibrary import db
-from datetime import datetime
+from datetime import datetime, date
 
 class User(db.Model):
 
@@ -72,12 +72,14 @@ class checkoutRecords(db.Model):
     book_id           = db.Column(db.Integer, db.ForeignKey('Book.id'), nullable=False)
     user_id           = db.Column(db.String(45), db.ForeignKey('User.email'))
     checkoutdate      = db.Column(db.Date)
-    duedate           = db.Column(db.Date, nullable=True, default=None)
-    returndate        = db.Column(db.Date, nullable=True, default=None)
+    duedate           = db.Column(db.Date)
+    returndate        = db.Column(db.Date, nullable=True)
     isbn              = db.Column(db.String(45))
 
-    def __init__(self, book_id, user_id, checkoutdate):
+    def __init__(self, book_id, user_id, checkoutdate, duedate, isbn):
 
         self.book_id = book_id
         self.user_id = user_id
         self.checkoutdate = checkoutdate
+        self.duedate = duedate
+        self.isbn = isbn
