@@ -53,6 +53,8 @@ def book_detail(book_id):
     return render_template("book_detail.html", book = book_info, review_list = book_review, rating_avg = rating_avg, review_cnt = len(book_review))
 
 
+
+
 # 리뷰 작성
 @book.route('/review/<int:book_id>', methods=["POST"])
 def write_review(book_id):   
@@ -92,9 +94,9 @@ def write_review(book_id):
             # -> db에 대출기록 보내기
 @book.route('/book_checkout/<int:book_id>', methods=["GET","POST"])
 def checkout(book_id):
-    if 'login_id' in session:
+
+    if session['login_id'] != None:
         # 현재 대출신청한 책 Book db에서 book_status를 바꾸기(대출중 0으로)
-        # 수정할 레코드 불러와서, 해당 값만 수정해주고, commit()
         
         checkoutbook = Book.query.filter(Book.id == book_id).first()
         checkoutbook.book_status = "0"
@@ -105,8 +107,6 @@ def checkout(book_id):
 
         # checkoutRecords db에 대출기록 추가
             # 가져올 정보: book_id, user_id, 대출날짜checkoutdate(오늘로 자동생성), 반납일duedate(2주후로 자동생성)
-
-
 
     else :
         flash("대출하시려면 로그인이 필요합니다.")
