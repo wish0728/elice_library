@@ -25,10 +25,12 @@ def main_page():
         f.close()
 
         for i in booklist[1:]:
-            book_info = Book(title=i[1], publisher=i[2], author=i[3], publication_date=i[4], pages=i[5], isbn=i[6][:-1], description=i[7], book_link=i[8], book_status="1")
+            book_info = Book(title=i[1], publisher=i[2], author=i[3], publication_date=i[4], pages=i[5], isbn=i[6][:-1], description=i[7], book_link=i[8], book_status="1", at_user=None)
             db.session.add(book_info)
             db.session.commit()
-    
+        
+        return render_template("main.html", book_list=book_list)
+
     # 책을 무슨 기준으로 보여줄거니? -> 물리적 실체가 아니라 개념적 실체를 가르는 isbn으로 보여줄거임
     # 즉 isbn이 같으면 같은 책이기 때문에 하나로 보여줄거임
     # 따라서 쿼리문으로 book_list에 넣어줄 내용이 distinct를 써서 isbn당 하나만 나오게 만들어야하는데 어떻게 하는지 모르겠네 -> 질문
@@ -86,7 +88,7 @@ def write_review(book_id):
 
 
 
-# 책  대여하기 기능 구현
+# 책 대여하기 기능 구현
 @book.route('/book_checkout/<int:book_id>', methods=["POST"])
 def checkout(book_id):
 
@@ -97,13 +99,14 @@ def checkout(book_id):
     else :
         # 현재 대출신청한 책 Book db에서 book_status를 바꾸기(대출중 0으로)
         checkoutbook = Book.query.filter(Book.id == book_id).first()
-        
+        user_id = session['login_id']
+
         if checkoutbook.book_status == "1":
             checkoutbook.book_status = "0"
+            checkoutbook.at_user = user_id
         # checkoutRecords db에 대출기록 추가
             # 가져올 정보: book_id, user_id, 대출날짜checkoutdate(오늘로 자동생성), 반납일duedate(2주후로 자동생성)
             print(checkoutbook.isbn)
-            user_id = session['login_id']
             checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today(), duedate=date.today()+timedelta(days=14), isbn=checkoutbook.isbn)
             db.session.add(checkout)
             db.session.commit()
@@ -136,19 +139,30 @@ def checkoutlist():
         flash("책을 반납하시려면 로그인을 해주세요.")
         return redirect(url_for('user.login'))
     else :
-        # checkoutRecords에서 user_id가 login_id와 일치하는 데이터를 불러와서 => 전체대출기록
-        # Book테이블에서 book_status가 대출중인 책으로 필터 걸어서 보여주면 => 현재대출
+        login_id = session['login_id']
+            # Book에서 필터로 at_user가 현재 로그인 아이디와 일치하는 책 정보를 모두 불러오면 됨
+            # 불러올 때 대출과 관련된 정보는 checkoutRecords에서 불러와야함. book_id로 불러오기
+        # checkout_list = Book.query.filter(Book.at_user==login_id).all()
+            # 현재 대출중인 책을 보여줄 때, 대출정보는 checkoutRecords에서 책 정보는 Book에서 가져와야함 
+            # -> book_id로 테이블 조인해서 불러와야겠네
+        checkout_list = db.session.query(Book).join(checkoutRecords, Book.id == checkoutRecords.book_id).filter(Book.at_user==login_id).all()
+
+        return_count = len(checkout_list)
         
-        # 여기 join으로 다른 책 정보도 가져와야겠네 
-        returnlist = checkoutRecords.query.filter(checkoutRecords.user_id==session['login_id']).all()
-        return_count = len(returnlist)
-        return render_template("return.html", returnlist=returnlist, cnt=return_count)
+        #cb_info = db.session.query(checkout_list).join(Book, checkout_list.book_id==Book.id).all()
+
+
+        return render_template("return.html", checkout_list=checkout_list, cnt=return_count)
 
     # 현재 대출중인 책이 있으면 
         # 불러오기 - 보여줄 정보는
         # 책 제목, 저자, 출판사, 대출일, 반납예정일(duedate)
         # 반납하기 버튼
-    # 대출중인 책 없으면 현재 대출중인 책이 없습니다. 
+    # 대출중인 책이 없으면 현재 대출중인 책이 없습니다. 
+
+
+
+
 
 
 
