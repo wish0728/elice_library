@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash, url_for, session
 from sqlalchemy.orm import query
 from elicelibrary.models import *
-from datetime import date
+from datetime import date, timedelta
 import csv
 
 book = Blueprint('book', __name__, url_prefix='/')
@@ -86,20 +86,13 @@ def write_review(book_id):
 
 
 
-# 대출하기 기능 구현
-    # 메인화면에서 대출하기 버튼 눌렀을 때 (로그인 상태로 분기)
-        # 로그아웃 상태면 :
-            # -> 로그인 화면으로 돌아가기
-        # 로그인 상태면 : 대출 실행
-            # -> 대출실행되면 book_status 변경
-            # -> db에 대출기록 보내기
+# 책  대여하기 기능 구현
 @book.route('/book_checkout/<int:book_id>', methods=["POST"])
 def checkout(book_id):
 
     if session['login_id'] == None:
         flash("대출하시려면 로그인이 필요합니다.")
         return redirect(url_for('user.login'))
-
 
     else :
         # 현재 대출신청한 책 Book db에서 book_status를 바꾸기(대출중 0으로)
@@ -110,7 +103,7 @@ def checkout(book_id):
             # 가져올 정보: book_id, user_id, 대출날짜checkoutdate(오늘로 자동생성), 반납일duedate(2주후로 자동생성)
         print(checkoutbook.isbn)
         user_id = session['login_id']
-        checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today(), duedate=date.today(), isbn=checkoutbook.isbn)
+        checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today(), duedate=date.today()+timedelta(days=14), isbn=checkoutbook.isbn)
         db.session.add(checkout)
         db.session.commit()
 
