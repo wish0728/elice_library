@@ -120,8 +120,6 @@ def checkout(book_id):
 
 
 
-
-
 # 대여기록
 @book.route('/checkout_records', methods=["GET", "POST"])
 def user_records():
@@ -130,9 +128,34 @@ def user_records():
 
 
 
-# 반납하기 - 현재 대출중인 책 목록 보여주기
-@book.route('/return', methods=["GET", "POST"])
+# 반납하기 - 현재 대출중인 책 목록 보여주기 -> 반납버튼 넣어주기
+@book.route('/return', methods=["GET","POST"])
+def checkoutlist():
+
+    if session['login_id'] == None:
+        flash("책을 반납하시려면 로그인을 해주세요.")
+        return redirect(url_for('user.login'))
+    else :
+        # checkoutRecords에서 user_id가 login_id와 일치하는 데이터를 불러와서 => 전체대출기록
+        # Book테이블에서 book_status가 대출중인 책으로 필터 걸어서 보여주면 => 현재대출
+        
+        # 여기 join으로 다른 책 정보도 가져와야겠네 
+        returnlist = checkoutRecords.query.filter(checkoutRecords.user_id==session['login_id']).all()
+        return_count = len(returnlist)
+        return render_template("return.html", returnlist=returnlist, cnt=return_count)
+
+    # 현재 대출중인 책이 있으면 
+        # 불러오기 - 보여줄 정보는
+        # 책 제목, 저자, 출판사, 대출일, 반납예정일(duedate)
+        # 반납하기 버튼
+    # 대출중인 책 없으면 현재 대출중인 책이 없습니다. 
+
+
+
+@book.route('/return/<int:book_id>', methods=["POST"])
 def book_return():
-    return jsonify({"result":"book_return"})
+    # 책 status 바꿔주기
+    # 대출기록에 return날짜 넣어주기
 
-
+    flash("반납이 처리되었습니다.")
+    return redirect(url_for('book.'))

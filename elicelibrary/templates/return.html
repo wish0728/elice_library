@@ -1,0 +1,33 @@
+<!-- base.html을 상속받고 -->
+{% extends 'base.html' %}
+<!-- block content를 연결받음 -->
+{% block title %} 메인페이지 {% endblock %}
+
+
+{% block content %}
+<!-- 책 목록 -->
+
+
+<div class="book-card-container">
+    <h2>현재 대출중인 책은 {{ cnt }}권 입니다.</h2>
+
+    {% for book in returnlist %}
+        <div class="book-info-card">
+            {{ book.title }}
+            <hr>
+            <hr>
+
+
+            <form action="{{ url_for('book.checkout', book_id=b.id) }}" method="post">
+                <input class='checkout-btn' type="submit" value="대출하기">
+            </form>  
+        </div>
+    {% endfor %}
+
+
+
+</div>
+
+
+
+{% endblock %}
