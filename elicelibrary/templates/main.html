@@ -21,7 +21,9 @@
             <br>
             {% endif %}
             <br>
-            <a href="/book_checkout/{{ b.id }}"> [대출하기] </a>
+            <form action="{{ url_for('book.checkout', book_id=b.id) }}" method="post">
+                <input class='checkout-btn' type="button" value="대출하기">
+            </form> 
         </div>
     {% endfor %}
 </div>

@@ -93,7 +93,7 @@ def write_review(book_id):
         # 로그인 상태면 : 대출 실행
             # -> 대출실행되면 book_status 변경
             # -> db에 대출기록 보내기
-@book.route('/book_checkout/<int:book_id>', methods=["GET","POST"])
+@book.route('/book_checkout/<int:book_id>', methods=["POST"])
 def checkout(book_id):
 
     if session['login_id'] == None:

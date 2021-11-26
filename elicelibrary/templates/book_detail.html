@@ -16,7 +16,9 @@
 
 <h2>
     <p>    대출가능/대출중: {{ book.book_status }}   </p>
-    <input class='checkout-btn' type="button" value="대출하기">
+    <form action="{{ url_for('book.checkout', book_id=book.id) }}" method="post">
+        <input class='checkout-btn' type="submit" value="대출하기">
+    </form> 
 </h2>
 
 <p> 책 이미지 :{{ book.book_img }}</p>
