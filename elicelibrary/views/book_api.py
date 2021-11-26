@@ -97,19 +97,23 @@ def checkout(book_id):
     else :
         # 현재 대출신청한 책 Book db에서 book_status를 바꾸기(대출중 0으로)
         checkoutbook = Book.query.filter(Book.id == book_id).first()
-        checkoutbook.book_status = "0"
-
+        
+        if checkoutbook.book_status == "1":
+            checkoutbook.book_status = "0"
         # checkoutRecords db에 대출기록 추가
             # 가져올 정보: book_id, user_id, 대출날짜checkoutdate(오늘로 자동생성), 반납일duedate(2주후로 자동생성)
-        print(checkoutbook.isbn)
-        user_id = session['login_id']
-        checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today(), duedate=date.today()+timedelta(days=14), isbn=checkoutbook.isbn)
-        db.session.add(checkout)
-        db.session.commit()
+            print(checkoutbook.isbn)
+            user_id = session['login_id']
+            checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today(), duedate=date.today()+timedelta(days=14), isbn=checkoutbook.isbn)
+            db.session.add(checkout)
+            db.session.commit()
 
-        flash("대출처리되었습니다.")
+            flash("대출처리되었습니다.")
 
-        return redirect(url_for('book.main_page'))
+            return redirect(url_for('book.main_page'))
+        else :
+            flash("현재는 대출하실 수 없습니다.")
+            return redirect(url_for('book.main_page'))
 
 
 
@@ -123,7 +127,10 @@ def checkout(book_id):
 def user_records():
     return jsonify({"result":"user_records"})
 
-# 반납하기
+
+
+
+# 반납하기 - 현재 대출중인 책 목록 보여주기
 @book.route('/return', methods=["GET", "POST"])
 def book_return():
     return jsonify({"result":"book_return"})

@@ -22,8 +22,8 @@
             {% endif %}
             <br>
             <form action="{{ url_for('book.checkout', book_id=b.id) }}" method="post">
-                <input class='checkout-btn' type="button" value="대출하기">
-            </form> 
+                <input class='checkout-btn' type="submit" value="대출하기">
+            </form>  
         </div>
     {% endfor %}
 </div>
