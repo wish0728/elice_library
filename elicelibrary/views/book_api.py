@@ -10,11 +10,9 @@ book = Blueprint('book', __name__, url_prefix='/')
 @book.route('/')
 def main_page():
 
-    # book_list = Book.query.order_by(Book.registered_date.desc()).all()
-    # rating_list = db.session.query(Review.rating, func.count(Review.rating)).group_by(Review.isbn).filter()
+    book_list = Book.query.order_by(Book.registered_date.desc()).all()
 
     # Book객체가 몇 개의 Review를 가지고 있는지 알고 싶을 때, Review목록의 수를 Book_id기준으로 묶은 후(grouped by), Book과 LEFT JOIN하면 됨 
-    book_list = Book.query.order_by(Book.registered_date.desc()).all()
     
     # rating = db.session.execute('SELECT * FROM Book LEFT JOIN (SELECT isbn, COUNT(rating), AVG(rating) FROM Review GROUP BY isbn) AS r ON Book.isbn = r.isbn;')
 
@@ -55,7 +53,7 @@ def book_detail(book_id):
     if book_review :
         for review in book_review:
             rating_sum += review.rating
-        rating_avg = rating_sum / len(book_review)
+        rating_avg = round(rating_sum / len(book_review), 1)
     return render_template("book_detail.html", book = book_info, review_list = book_review, rating_avg = rating_avg, review_cnt = len(book_review))
 
 

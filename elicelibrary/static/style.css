@@ -90,8 +90,7 @@ a {
 }
 
 .review-container {
-  margin: 10px 10px 10px 10px;
-  display: flex;
+  margin: 10px 10px 10px 30px;
   flex-wrap: wrap;
   flex-direction: column;
 }
@@ -104,10 +103,16 @@ a {
 
 
 .book-detail-info-container {
-  margin: 10px 10px 10px 10px;
+  margin: 10px 30px 10px 30px;
   padding: 10px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
   border: 1px solid black;  
+}
+
+
+.login-for-review {
+  margin: 10px 10px 10px 30px;
+  background-color: rgb(194, 215, 223);
 }

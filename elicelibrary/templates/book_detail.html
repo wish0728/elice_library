@@ -11,14 +11,17 @@
 
 {% block content %}
 <div class="book-detail-info-container">
-<h3>~~개별적인 책 정보 이것저것 보여주는 페이지~~</h3>
-<h2> 책제목 :{{ book.title }}</h2>
+<h2> {{ book.title }}</h2>
 
 <h2>
-    <p>대출가능/대출중: {{ book.book_status }}   </p>
+    {% if book.book_status == "1" %}
+    <p style="color: blue;">대출가능</p>
     <form action="{{ url_for('book.checkout', book_id=book.id) }}" method="post">
         <input class='checkout-btn' type="submit" value="대출하기">
     </form> 
+    {% else %}
+    <p style="color: red;">대출불가</p>
+    {% endif %}
 </h2>
 
 <p> 책 이미지 :{{ book.book_img }}</p>
@@ -33,7 +36,6 @@
 
 
 <div class="review-container">
-    <h2>~~ 리뷰 ~~</h2>
     <p>리뷰가 총 {{ review_cnt }} 개 있습니다. 평균별점은 {{ rating_avg }} 입니다. </p>
     {% for review in review_list %}
     <div class="review">
@@ -42,7 +44,7 @@
         <p>평가: {{ review.content }}</p>
     </div>
     {% endfor %}
-</div>
+
 
 {% if session['login_id'] %}
 <h3>리뷰 작성</h3>
@@ -62,9 +64,11 @@
 </form>
 
 {% else %}
+<div class="login-for-review">
 <p>리뷰를 남기기 위해서는 로그인이 필요합니다.</p>
-<a href="{{ url_for('user.login')}}">로그인하기</a>
-
+<a href="{{ url_for('user.login')}}" style="font-weight: bold;">로그인하기</a>
+</div>
+</div>
 
 {% endif %}
 
