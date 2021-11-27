@@ -12,8 +12,7 @@
     {% for b in book_list %}
         <div class="book-info-card">
             <a href="/book_info/{{ b.id }}">{{ b.title }}</a>
-            <hr>
-            <br>[별점***]
+            <p>{{ b.author }}</p>
             <hr>
             {% if b.book_status == '1' %}
                 <p style="color: blue;">대출가능</p>

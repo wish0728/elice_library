@@ -48,12 +48,23 @@ a {
   border-radius: 4px;
 }
 
+.register-input-block {
+  display: flex;
+  justify-content: center;
+}
+
 .register-input-block p {
   display: flex;
+  justify-content: center;
+}
+
+.login-input-block {
+  display: flex;
+  justify-content: center;
 }
 
 .login-input-block p {
-  display: flex;
+  flex-direction:column ;
 }
 
 
@@ -62,7 +73,7 @@ a {
   margin: 10px 20px 10px 20px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: flex-start;  
 }
 
 .book-info-card {

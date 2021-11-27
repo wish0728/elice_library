@@ -1,7 +1,5 @@
 from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash, url_for, session
-from sqlalchemy.orm import query
-from sqlalchemy import func
-from sqlalchemy.sql.expression import label
+from sqlalchemy import *
 from elicelibrary.models import *
 from datetime import date, timedelta
 import csv
@@ -15,24 +13,14 @@ def main_page():
     # book_list = Book.query.order_by(Book.registered_date.desc()).all()
     # rating_list = db.session.query(Review.rating, func.count(Review.rating)).group_by(Review.isbn).filter()
 
-    # rating_list = db.session.query(Book).join(Review).filter()
-    # print(rating_list)
-    #avg_rate = sum(Review.rating)/len(Review.rating)
-
-    # Book객체가 몇 개의 Review를 가지고 있는지 알고 싶을 때, Review목록의 수를 Book_id기준으로 묶은 후(grouped by), Book과 LEFT OUTER JOIN하면 됨 
+    # Book객체가 몇 개의 Review를 가지고 있는지 알고 싶을 때, Review목록의 수를 Book_id기준으로 묶은 후(grouped by), Book과 LEFT JOIN하면 됨 
     book_list = Book.query.order_by(Book.registered_date.desc()).all()
-    #rating = db.session.query(Review.rating, func.count('*').label('review_count')).group_by(Review.isbn).subquery()
     
-    # 일단 쿼리문 짜자
+    # rating = db.session.execute('SELECT * FROM Book LEFT JOIN (SELECT isbn, COUNT(rating), AVG(rating) FROM Review GROUP BY isbn) AS r ON Book.isbn = r.isbn;')
 
-    # 리뷰 테이블에서 isbn별로 rating갯수와 평균을 가져오는 쿼리
-    SELECT isbn, COUNT(rating), AVG(rating) FROM Review GROUP BY isbn; 
-    
-    SELECT * FROM FULL Book OUTER JOIN Review ON Book.isbn = Review.isbn
 
-    SELECT * FROM Book WHERE Book.isbn = (SELECT Review.isbn )
 
-    SELECT * FROM Book INNER JOIN (SELECT isbn, COUNT(rating), AVG(rating) FROM Review GROUP BY isbn) AS r ON Book.isbn = r.isbn;
+
     # db에 내용 없으면 csv를 넣는 코드 - 최초에 db가 없을때만 실행됨.
     # registered_date 기준으로 한 이유는 추후 새로 책이 입고될 때 새로 입고된 책들이 상단에 뜨도록 하기 위함.
     
@@ -46,13 +34,13 @@ def main_page():
         f.close()
 
         for i in booklist[1:]:
-            book_info = Book(title=i[1], publisher=i[2], author=i[3], publication_date=i[4], pages=i[5], isbn=i[6][:-1], description=i[7], book_link=i[8], book_status="1", at_user=None)
+            book_info = Book(title=i[1], publisher=i[2], author=i[3], publication_date=i[4], pages=i[5], isbn=i[6], description=i[7], book_link=i[8], book_status="1", at_user=None)
             db.session.add(book_info)
             db.session.commit()
 
         return redirect(url_for("main.html"))
 
-    return render_template("main.html", book_list=book_list, rating=rating)
+    return render_template("main.html", book_list=book_list)
 
 
 
