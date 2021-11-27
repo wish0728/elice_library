@@ -15,7 +15,7 @@
 <h2> 책제목 :{{ book.title }}</h2>
 
 <h2>
-    <p>    대출가능/대출중: {{ book.book_status }}   </p>
+    <p>대출가능/대출중: {{ book.book_status }}   </p>
     <form action="{{ url_for('book.checkout', book_id=book.id) }}" method="post">
         <input class='checkout-btn' type="submit" value="대출하기">
     </form> 
@@ -62,7 +62,8 @@
 </form>
 
 {% else %}
-<p>로그인 후 리뷰를 남겨주세요</p>
+<p>리뷰를 남기기 위해서는 로그인이 필요합니다.</p>
+<a href="{{ url_for('user.login')}}">로그인하기</a>
 
 
 {% endif %}

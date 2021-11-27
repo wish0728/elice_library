@@ -12,8 +12,6 @@ def main_page():
     book_list = Book.query.order_by(Book.registered_date.desc()).all()
     # db에 내용 없으면 csv를 넣는 코드 - 최초에 db가 없을때만 실행됨.
     # registered_date 기준으로 한 이유는 추후 새로 책이 입고될 때 새로 입고된 책들이 상단에 뜨도록 하기 위함.
-
-    #!) 애초에 여기서 book_list 에 book_status에 따라서 abandon도서는 한 번 걸러줘야함
     
     if not book_list : 
     
@@ -33,7 +31,6 @@ def main_page():
 
     # 책을 무슨 기준으로 보여줄거니? -> 물리적 실체가 아니라 개념적 실체를 가르는 isbn으로 보여줄거임
     # 즉 isbn이 같으면 같은 책이기 때문에 하나로 보여줄거임
-    # 따라서 쿼리문으로 book_list에 넣어줄 내용이 distinct를 써서 isbn당 하나만 나오게 만들어야하는데 어떻게 하는지 모르겠네 -> 질문
 
     return render_template("main.html", book_list=book_list)
 
@@ -43,11 +40,9 @@ def main_page():
 # 책 개별 소개 페이지 
 @book.route('/book_info/<int:book_id>', methods=["GET"])
 def book_detail(book_id):
-    # 첵정보 불러오기
     book_info = Book.query.filter(Book.id == book_id).first()
     # isbn이 같은 리뷰 전부 불러오기
     book_review = Review.query.filter(Review.isbn == book_info.isbn).all()
-    # 리뷰갯수, 리뷰 평균별점
     rating_sum, rating_avg = 0, 0
     if book_review :
         for review in book_review:
@@ -62,12 +57,10 @@ def book_detail(book_id):
 @book.route('/review/<int:book_id>', methods=["POST"])
 def write_review(book_id):   
     # login한 session이 있으면 작성, 없으면 로그인 페이지로 이동
-
     if 'login_id' not in session:
         flash('리뷰를 작성하시려면 로그인 해주세요.')
         return redirect(url_for('user.login'))
 
-    # user_id = session['user_id']    -> 이 로그인 세션을 어디서 어떻게 가져와야 하지?? 
     write_rating = request.form['star']
     write_content = request.form['review']
     writer_id = session['login_id']
@@ -127,21 +120,20 @@ def user_dashboard():
     else :
         login_id = session['login_id']
 
-        checkout_list = db.session.query(checkoutRecords, Book).join(Book).filter(checkoutRecords.user_id == login_id).all()
-        
-        return_count=len(checkout_list)
+    # 현재 대출중인 책 / 과거에 대출했던 책 나누기
+        checkout_list = db.session.query(checkoutRecords, Book).join(Book).filter((checkoutRecords.user_id == login_id) & (checkoutRecords.returndate == None)).all()
+        checkout_count=len(checkout_list)
 
-        return render_template("checkoutrecords.html", checkout_list=checkout_list, cnt=return_count)
+        return_records = db.session.query(checkoutRecords, Book).join(Book).filter((checkoutRecords.user_id == login_id) & (checkoutRecords.returndate != None)).all()
+        return_count= len(return_records)
+
+        return render_template("checkoutrecords.html", checkout_list=checkout_list, checkout_count=checkout_count, return_records=return_records, return_count=return_count)
 
 
 
-# 반납기능 구현
+# 반납기능
 @book.route('/return/<int:book_id>', methods=["POST"])
 def book_return(book_id):
-    # 현재 책의 대출기록을 찾아야함
-        # Book에서 status에 현재 로긴한 user_id 가 적혀있는 레코드 % book 해당 책이 현재 유저가 반납할 수 있는 책들임
-        # -> checkoutRecords에서 
-    
 
     # 책 status 바꿔주기
     returnbook = Book.query.filter(Book.id == book_id).first()

@@ -8,9 +8,8 @@
 <!-- 책 목록 -->
 
 
+<p>현재 대출중인 책은 총 {{ checkout_count }} 권 입니다.</p>
 <div class="book-card-container">
-    <h2>지금까지 대출한 책은 총 {{ cnt }} 권 입니다. </h2>
-
     {% for book in checkout_list %}
         <div class="checkout-info-list">
             <p>제목: {{ book[1].title }}</p>
@@ -19,12 +18,27 @@
             <p>isbn: {{ book[1].isbn }}</p>
             <p>book_id: {{ book[0].book_id }}</p>
             <p>대출일: {{ book[0].checkoutdate }}</p>
-            <p>반납일: {{ book[0].returndate }}</p>
+            <p>반납예정일: {{ book[0].duedate }}</p>
 
 
             <form action="{{ url_for('book.book_return', book_id=book[0].book_id) }}" method="post">
                 <input class='checkout-btn' type="submit" value="반납하기">
             </form>  
+        </div>
+    {% endfor %}
+</div>
+<hr>
+<p>지금까지 대출한 책은 총 {{ return_count }} 권 입니다. </p>
+<div class="book-card-container">
+    {% for book in return_records %}
+        <div class="checkout-info-list">
+            <p>제목: {{ book[1].title }}</p>
+            <p>저자: {{ book[1].author }}</p>
+            <p>출판사: {{ book[1].publisher }}</p>
+            <p>isbn: {{ book[1].isbn }}</p>
+            <p>book_id: {{ book[0].book_id }}</p>
+            <p>대출일: {{ book[0].checkoutdate }}</p>
+            <p>반납일: {{ book[0].returndate }}</p>
         </div>
     {% endfor %}
 </div>
