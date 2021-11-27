@@ -140,30 +140,25 @@ def checkoutlist():
         return redirect(url_for('user.login'))
     else :
         login_id = session['login_id']
-            # Book에서 필터로 at_user가 현재 로그인 아이디와 일치하는 책 정보를 모두 불러오면 됨
-            # 불러올 때 대출과 관련된 정보는 checkoutRecords에서 불러와야함. book_id로 불러오기
-        # checkout_list = Book.query.filter(Book.at_user==login_id).all()
-            # 현재 대출중인 책을 보여줄 때, 대출정보는 checkoutRecords에서 책 정보는 Book에서 가져와야함 
-            # -> book_id로 테이블 조인해서 불러와야겠네
-        checkout_list = db.session.query(Book).join(checkoutRecords, Book.id == checkoutRecords.book_id).filter(Book.at_user==login_id).all()
-
-        return_count = len(checkout_list)
-        
-        #cb_info = db.session.query(checkout_list).join(Book, checkout_list.book_id==Book.id).all()
+        # checkout_list = db.session.query(Book).join(checkoutRecords, Book.id == checkoutRecords.book_id).filter(Book.at_user==login_id).all()
+        # return_count=len(checkout_list)
+        # 일단 sql쿼리문으로 써보자 그 다음에 orm으로 바꿔보기
+        checkout_list = db.session.query(checkoutRecords, Book).join(Book).filter(checkoutRecords.user_id == login_id).all()
+        # checkout_list = checkout_list.query.filter(Book.id)
+        # for b in checkout_list :
+        #     print(b[0].book_id)
+        #     print(b[1].id)
+        return_count=len(checkout_list)
 
 
         return render_template("return.html", checkout_list=checkout_list, cnt=return_count)
 
-    # 현재 대출중인 책이 있으면 
-        # 불러오기 - 보여줄 정보는
-        # 책 제목, 저자, 출판사, 대출일, 반납예정일(duedate)
-        # 반납하기 버튼
-    # 대출중인 책이 없으면 현재 대출중인 책이 없습니다. 
 
+'''
+#이렇게 조인을 하면, 첫번째는 Rent객체, 두번쨰는 Books 객체가 결과값으로 반환된다
 
-
-
-
+history = db.session.query(Rent, Books).filter((Rent.book_id == Books.id) & (Rent.user_id == session.get('login'))).all()
+'''
 
 
 @book.route('/return/<int:book_id>', methods=["POST"])

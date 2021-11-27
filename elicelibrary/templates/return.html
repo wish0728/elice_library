@@ -13,16 +13,16 @@
 
     {% for book in checkout_list %}
         <div class="checkout-info-list">
-            <p>제목: {{ book.title }}</p>
-            <p>저자: {{ book.author }}</p>
-            <p>출판사: {{ book.publisher }}</p>
-            <p>isbn: {{ book.isbn }}</p>
-            <p>book_id: {{ book.id }}</p>
-            <p>대출일: </p>
-            <p>반납예정일: </p>
+            <p>제목: {{ book[1].title }}</p>
+            <p>저자: {{ book[1].author }}</p>
+            <p>출판사: {{ book[1].publisher }}</p>
+            <p>isbn: {{ book[1].isbn }}</p>
+            <p>book_id: {{ book[0].book_id }}</p>
+            <p>대출일: {{ book[0].checkoutdate }}</p>
+            <p>반납예정일: {{ book[0].duedate }}</p>
 
 
-            <form action="{{ url_for('book.book_return', book_id=book.id) }}" method="post">
+            <form action="{{ url_for('book.book_return', book_id=book[0].book_id) }}" method="post">
                 <input class='checkout-btn' type="submit" value="반납하기">
             </form>  
         </div>
