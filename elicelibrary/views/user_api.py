@@ -12,11 +12,10 @@ def join():
     if request.method == 'GET' :
         return render_template("join.html")
     elif request.method == 'POST' :
-        # 회원가입 로직
-        # 중복 id 없는지 확인
+        # 회원가입 -  중복 id 없는지 확인
         user_email = User.query.filter_by(email=request.form['useremail']).first()
         if not user_email :
-            password = generate_password_hash(request.form['password']) #암호화된 비밀번호
+            password = generate_password_hash(request.form['password']) 
             new_user = User(email=request.form['useremail'], password=password, name=request.form['username'], phone=request.form['phone'])
             db.session.add(new_user)
             db.session.commit()

@@ -32,7 +32,7 @@ def main_page():
             db.session.add(book_info)
             db.session.commit()
 
-        return redirect(url_for("main.html"))
+        return redirect(url_for("book.main_page"))
 
     return render_template("main.html", book_list=book_list)
 
