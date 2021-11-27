@@ -116,3 +116,44 @@ a {
   margin: 10px 10px 10px 30px;
   background-color: rgb(194, 215, 223);
 }
+
+
+
+/* 대시보드 */
+.checkout-book-container {
+  margin: 10px 20px 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;  
+}
+
+.checkout-book-list {
+  margin: 10px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
+  width: 200px;
+  height: 300px;
+  border: 1px solid blue;
+}
+
+/* 대시보드 */
+.checkout-book-container {
+  margin: 10px 20px 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;  
+}
+
+.checkout-book-list {
+  margin: 10px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
+  width: 200px;
+  height: 300px;
+  border: 1px solid blue;
+}
+
+.records-container {
+  margin: 10px 20px 10px 20px;
+}
+
+
+

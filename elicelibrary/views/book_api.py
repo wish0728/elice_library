@@ -11,12 +11,8 @@ book = Blueprint('book', __name__, url_prefix='/')
 def main_page():
 
     book_list = Book.query.order_by(Book.registered_date.desc()).all()
-
     # Book객체가 몇 개의 Review를 가지고 있는지 알고 싶을 때, Review목록의 수를 Book_id기준으로 묶은 후(grouped by), Book과 LEFT JOIN하면 됨 
-    
-    # rating = db.session.execute('SELECT * FROM Book LEFT JOIN (SELECT isbn, COUNT(rating), AVG(rating) FROM Review GROUP BY isbn) AS r ON Book.isbn = r.isbn;')
-
-
+    # 'SELECT * FROM Book LEFT JOIN (SELECT isbn, COUNT(rating), AVG(rating) FROM Review GROUP BY isbn) AS r ON Book.isbn = r.isbn;'
 
 
     # db에 내용 없으면 csv를 넣는 코드 - 최초에 db가 없을때만 실행됨.
@@ -42,7 +38,6 @@ def main_page():
 
 
 
-
 # 책 상세 페이지 
 @book.route('/book_info/<int:book_id>', methods=["GET"])
 def book_detail(book_id):
@@ -57,12 +52,9 @@ def book_detail(book_id):
     return render_template("book_detail.html", book = book_info, review_list = book_review, rating_avg = rating_avg, review_cnt = len(book_review))
 
 
-
-
 # 리뷰 작성
 @book.route('/review/<int:book_id>', methods=["POST"])
 def write_review(book_id):   
-    # login한 session이 있으면 작성, 없으면 로그인 페이지로 이동
     if 'login_id' not in session:
         flash('리뷰를 작성하시려면 로그인 해주세요.')
         return redirect(url_for('user.login'))
@@ -70,21 +62,19 @@ def write_review(book_id):
     write_rating = request.form['star']
     write_content = request.form['review']
     writer_id = session['login_id']
-    
-    # isbn을 db에서 쿼리문으로 현재 페이지의 책 id랑 같은 애로 필터해서 걔의 isbn을 불러오기
     book = Book.query.filter(Book.id == book_id).first()
 
     review = Review(rating=write_rating, content=write_content, user_id=writer_id , isbn=book.isbn)
     db.session.add(review)
     db.session.commit()
 
-    flash('리뷰 썼어!')
+    flash('리뷰 등록!')
     return redirect(url_for('book.book_detail', book_id=book_id))
 
 
 
 
-# 책 대여하기 기능 구현
+# 책 대여하기 기능
 @book.route('/checkout/<int:book_id>', methods=["POST"])
 def checkout(book_id):
 
@@ -93,15 +83,15 @@ def checkout(book_id):
         return redirect(url_for('user.login'))
 
     else :
-        # 현재 대출신청한 책 Book db에서 book_status를 바꾸기(대출중 0으로)
         checkoutbook = Book.query.filter(Book.id == book_id).first()
         user_id = session['login_id']
 
+        # Book테이블에서 현재 대출신청한 책의 book_status를 바꾸기(대출중 0으로)
         if checkoutbook.book_status == "1":
             checkoutbook.book_status = "0"
             checkoutbook.at_user = user_id
-        # checkoutRecords db에 대출기록 추가
 
+        # checkoutRecords 테이블에 대출기록 추가
             checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today(), duedate=date.today()+timedelta(days=14), isbn=checkoutbook.isbn)
             db.session.add(checkout)
             db.session.commit()
@@ -153,11 +143,9 @@ def book_return(book_id):
         return_record.returndate = date.today()
 
         db.session.commit()
-
+        flash("반납이 완료되었습니다.")
         return redirect(url_for('book.user_dashboard'), )
 
-        # flash("반납이 처리되었습니다.")
-        #return redirect(url_for('book.'))
     else :
         flash("관리자에게 문의하시기 바랍니다.")
         return redirect(url_for('book.user_dashboard'))
