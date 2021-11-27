@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash, url_for, session
-from elicelibrary.models import *
+from app.models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 
 

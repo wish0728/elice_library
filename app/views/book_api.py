@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash, url_for, session
 from sqlalchemy import *
-from elicelibrary.models import *
+from app.models import *
 from datetime import date, timedelta
 import csv
 

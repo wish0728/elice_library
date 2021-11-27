@@ -1,5 +1,5 @@
 from enum import unique
-from elicelibrary import db
+from app import db
 from datetime import datetime, date
 
 class User(db.Model):
