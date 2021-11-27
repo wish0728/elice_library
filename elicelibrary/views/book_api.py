@@ -85,11 +85,8 @@ def write_review(book_id):
 
 
 
-
-
-
 # 책 대여하기 기능 구현
-@book.route('/book_checkout/<int:book_id>', methods=["POST"])
+@book.route('/checkout/<int:book_id>', methods=["POST"])
 def checkout(book_id):
 
     if session['login_id'] == None:
@@ -106,7 +103,7 @@ def checkout(book_id):
             checkoutbook.at_user = user_id
         # checkoutRecords db에 대출기록 추가
             # 가져올 정보: book_id, user_id, 대출날짜checkoutdate(오늘로 자동생성), 반납일duedate(2주후로 자동생성)
-            print(checkoutbook.isbn)
+            # print(checkoutbook.isbn)
             checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today(), duedate=date.today()+timedelta(days=14), isbn=checkoutbook.isbn)
             db.session.add(checkout)
             db.session.commit()
@@ -121,50 +118,35 @@ def checkout(book_id):
 
 
 
-
-
-# 대여기록
-@book.route('/checkout_records', methods=["GET", "POST"])
-def user_records():
-    return jsonify({"result":"user_records"})
-
-
-
-
-# 반납하기 - 현재 대출중인 책 목록 보여주기 -> 반납버튼 넣어주기
-@book.route('/return', methods=["GET","POST"])
-def checkoutlist():
-
+# 대여기록/반납하기 - [대시보드]
+@book.route('/dashboard', methods=["GET", "POST"])
+def user_dashboard():
     if session['login_id'] == None:
-        flash("책을 반납하시려면 로그인을 해주세요.")
+        flash("대출기록을 확인하시려면 로그인을 해주세요.")
         return redirect(url_for('user.login'))
     else :
         login_id = session['login_id']
-        # checkout_list = db.session.query(Book).join(checkoutRecords, Book.id == checkoutRecords.book_id).filter(Book.at_user==login_id).all()
-        # return_count=len(checkout_list)
-        # 일단 sql쿼리문으로 써보자 그 다음에 orm으로 바꿔보기
+
         checkout_list = db.session.query(checkoutRecords, Book).join(Book).filter(checkoutRecords.user_id == login_id).all()
-        # checkout_list = checkout_list.query.filter(Book.id)
-        # for b in checkout_list :
-        #     print(b[0].book_id)
-        #     print(b[1].id)
+        
         return_count=len(checkout_list)
 
-
-        return render_template("return.html", checkout_list=checkout_list, cnt=return_count)
-
-
-'''
-#이렇게 조인을 하면, 첫번째는 Rent객체, 두번쨰는 Books 객체가 결과값으로 반환된다
-
-history = db.session.query(Rent, Books).filter((Rent.book_id == Books.id) & (Rent.user_id == session.get('login'))).all()
-'''
+        return render_template("checkoutrecords.html", checkout_list=checkout_list, cnt=return_count)
 
 
+
+# 반납기능 구현
 @book.route('/return/<int:book_id>', methods=["POST"])
-def book_return():
+def book_return(book_id):
     # 책 status 바꿔주기
-    # 대출기록에 return날짜 넣어주기
+    returnbook = Book.query.filter(Book.id == book_id).first()
+    user_id = session['login_id']
 
+    if returnbook.book_status == "0" :
+        returnbook.book_status = "1" 
+        returnbook.at_user = None
+
+    # 대출기록에 return날짜 넣어주기
+        
     flash("반납이 처리되었습니다.")
     return redirect(url_for('book.'))

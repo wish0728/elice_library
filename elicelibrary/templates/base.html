@@ -21,13 +21,11 @@
                 {% block nav_link %}
                 {% if session['login_id'] %}
                 <li><a class="nav-link" href="">{{ session['login_id'] }}님 </a></li>
+                <li><a class="nav-link" href="{{ url_for('book.user_dashboard')}}">대여기록/반납하기</a></li>
                 <li><a class="nav-link" href="/logout">로그아웃</a></li>
-                <li><a class="nav-link" href="/checkout_records">대여기록</a></li>
-                <li><a class="nav-link" href="/return">반납하기</a></li>
+
                 {% else %}
                 <li><a class="nav-link" href="/login">로그인/회원가입</a></li>
-                <li><a class="nav-link" href="/checkout_records">대여기록</a></li>
-                <li><a class="nav-link" href="/return">반납하기</a></li>
                 {% endif %}
                 {% endblock %}
             </ul>
