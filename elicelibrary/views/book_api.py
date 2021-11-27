@@ -1,5 +1,7 @@
 from flask import Flask, render_template, jsonify, request, redirect, Blueprint, flash, url_for, session
 from sqlalchemy.orm import query
+from sqlalchemy import func
+from sqlalchemy.sql.expression import label
 from elicelibrary.models import *
 from datetime import date, timedelta
 import csv
@@ -9,7 +11,28 @@ book = Blueprint('book', __name__, url_prefix='/')
 # 메인 페이지
 @book.route('/')
 def main_page():
+
+    # book_list = Book.query.order_by(Book.registered_date.desc()).all()
+    # rating_list = db.session.query(Review.rating, func.count(Review.rating)).group_by(Review.isbn).filter()
+
+    # rating_list = db.session.query(Book).join(Review).filter()
+    # print(rating_list)
+    #avg_rate = sum(Review.rating)/len(Review.rating)
+
+    # Book객체가 몇 개의 Review를 가지고 있는지 알고 싶을 때, Review목록의 수를 Book_id기준으로 묶은 후(grouped by), Book과 LEFT OUTER JOIN하면 됨 
     book_list = Book.query.order_by(Book.registered_date.desc()).all()
+    #rating = db.session.query(Review.rating, func.count('*').label('review_count')).group_by(Review.isbn).subquery()
+    
+    # 일단 쿼리문 짜자
+
+    # 리뷰 테이블에서 isbn별로 rating갯수와 평균을 가져오는 쿼리
+    SELECT isbn, COUNT(rating), AVG(rating) FROM Review GROUP BY isbn; 
+    
+    SELECT * FROM FULL Book OUTER JOIN Review ON Book.isbn = Review.isbn
+
+    SELECT * FROM Book WHERE Book.isbn = (SELECT Review.isbn )
+
+    SELECT * FROM Book INNER JOIN (SELECT isbn, COUNT(rating), AVG(rating) FROM Review GROUP BY isbn) AS r ON Book.isbn = r.isbn;
     # db에 내용 없으면 csv를 넣는 코드 - 최초에 db가 없을때만 실행됨.
     # registered_date 기준으로 한 이유는 추후 새로 책이 입고될 때 새로 입고된 책들이 상단에 뜨도록 하기 위함.
     
@@ -26,18 +49,15 @@ def main_page():
             book_info = Book(title=i[1], publisher=i[2], author=i[3], publication_date=i[4], pages=i[5], isbn=i[6][:-1], description=i[7], book_link=i[8], book_status="1", at_user=None)
             db.session.add(book_info)
             db.session.commit()
-        
-        return render_template("main.html", book_list=book_list)
 
-    # 책을 무슨 기준으로 보여줄거니? -> 물리적 실체가 아니라 개념적 실체를 가르는 isbn으로 보여줄거임
-    # 즉 isbn이 같으면 같은 책이기 때문에 하나로 보여줄거임
+        return redirect(url_for("main.html"))
 
-    return render_template("main.html", book_list=book_list)
+    return render_template("main.html", book_list=book_list, rating=rating)
 
 
 
 
-# 책 개별 소개 페이지 
+# 책 상세 페이지 
 @book.route('/book_info/<int:book_id>', methods=["GET"])
 def book_detail(book_id):
     book_info = Book.query.filter(Book.id == book_id).first()
@@ -95,8 +115,7 @@ def checkout(book_id):
             checkoutbook.book_status = "0"
             checkoutbook.at_user = user_id
         # checkoutRecords db에 대출기록 추가
-            # 가져올 정보: book_id, user_id, 대출날짜checkoutdate(오늘로 자동생성), 반납일duedate(2주후로 자동생성)
-            # print(checkoutbook.isbn)
+
             checkout = checkoutRecords(book_id=checkoutbook.id, user_id=user_id, checkoutdate=date.today(), duedate=date.today()+timedelta(days=14), isbn=checkoutbook.isbn)
             db.session.add(checkout)
             db.session.commit()
@@ -120,7 +139,7 @@ def user_dashboard():
     else :
         login_id = session['login_id']
 
-    # 현재 대출중인 책 / 과거에 대출했던 책 나누기
+    # 현재 대출중인 책 / 과거에 대출했던 책 각각 불러오기
         checkout_list = db.session.query(checkoutRecords, Book).join(Book).filter((checkoutRecords.user_id == login_id) & (checkoutRecords.returndate == None)).all()
         checkout_count=len(checkout_list)
 

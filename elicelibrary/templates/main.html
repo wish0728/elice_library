@@ -8,6 +8,7 @@
 <!-- 책 목록 -->
 
 <div class="book-card-container">
+        {{ rating }}
     {% for b in book_list %}
         <div class="book-info-card">
             <a href="/book_info/{{ b.id }}">{{ b.title }}</a>
