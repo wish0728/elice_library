@@ -138,6 +138,11 @@ def user_dashboard():
 # 반납기능 구현
 @book.route('/return/<int:book_id>', methods=["POST"])
 def book_return(book_id):
+    # 현재 책의 대출기록을 찾아야함
+        # Book에서 status에 현재 로긴한 user_id 가 적혀있는 레코드 % book 해당 책이 현재 유저가 반납할 수 있는 책들임
+        # -> checkoutRecords에서 
+    
+
     # 책 status 바꿔주기
     returnbook = Book.query.filter(Book.id == book_id).first()
     user_id = session['login_id']
@@ -147,6 +152,15 @@ def book_return(book_id):
         returnbook.at_user = None
 
     # 대출기록에 return날짜 넣어주기
-        
-    flash("반납이 처리되었습니다.")
-    return redirect(url_for('book.'))
+        return_record = checkoutRecords.query.filter((checkoutRecords.book_id == book_id)&(checkoutRecords.returndate==None)).first()
+        return_record.returndate = date.today()
+
+        db.session.commit()
+
+        return redirect(url_for('book.user_dashboard'), )
+
+        # flash("반납이 처리되었습니다.")
+        #return redirect(url_for('book.'))
+    else :
+        flash("관리자에게 문의하시기 바랍니다.")
+        return redirect(url_for('book.user_dashboard'))
